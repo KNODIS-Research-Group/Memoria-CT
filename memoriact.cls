@@ -1,6 +1,23 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{memoriact}[2025/09/25 Modelo plan nacional]
 
+% Obligamos a que se use XeLaTex, y si no error
+\RequirePackage{iftex}
+\RequireXeTeX
+
+% Ahora las opciones de la clase
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{family=memoria,prefix=memoria@}
+
+\DeclareStringOption{type}     % Debe ser: individual | coordinado
+\DeclareBoolOption{yellowbox}  % Si existe, muestra el recuadro amarillo
+
+\ProcessKeyvalOptions*
+
+\def\mem@ind{individual}
+\def\mem@coo{coordinado}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Aquí lo específico de formato que aparece en la normativa (https://www.aei.gob.es/sites/default/files/convocatory_info/assistants/2025-09/Convocatoria_ProyectosGeneraci%C3%B3nConocimiento_PID2024_%20%281%29.pdf, artículo 18.2.a)
 
@@ -11,6 +28,9 @@
 \RequirePackage{polyglossia}
 \setmainlanguage{spanish}
 % setmainlanguage{english}
+
+% Para los condicionales
+\RequirePackage{etoolbox}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % La recomendación dice que "márgenes laterales de 2,5cm, márgenes
@@ -56,24 +76,38 @@
 \pagestyle{fancy}
 \fancyhf{}
 
-\fancyhead[L]{\tikz[baseline]{\node[opacity=.45,inner sep=0pt]{\includegraphics[height=1.5cm]{logo-mciu.jpg}};}}
-\fancyhead[R]{\tikz[baseline]{\node[opacity=.45,inner sep=0pt]{\includegraphics[height=1.5cm]{logo-aei.png}};}}
+\fancyhead[L]{\tikz[baseline]{\node[opacity=.45,inner sep=0pt]{\includegraphics[height=1.5cm]{logos/logo-mciu.jpg}};}}
+\fancyhead[R]{\tikz[baseline]{\node[opacity=.45,inner sep=0pt]{\includegraphics[height=1.5cm]{logos/logo-aei.png}};}}
 \renewcommand{\headrulewidth}{0pt}
 \setlength{\headheight}{3.9em}
 
-\fancyfoot[L]{\footnotesize Memoria Científico-Técnica\\Proyectos individuales tipo A, B y RTA}
+\ifdefstring{\memoria@type}{individual}{%
+  \fancyfoot[L]{\footnotesize Memoria Científico-Técnica\\Proyectos individuales tipo A, B y RTA}%
+}{%
+  \ifdefstring{\memoria@type}{coordinado}{%
+    \fancyfoot[L]{\footnotesize Memoria Científico-Técnica\\Proyectos coordinados tipo A, B y RTA}%
+  }{}%
+}
+
 \fancyfoot[R]{\footnotesize Pág. \thepage\ de \pageref{LastPage}}
 \renewcommand{\footrulewidth}{0.4pt}
 \renewcommand{\footrule}{\footnotesize \color{lightgray}\hrule height 0.4pt}
 
 \fancypagestyle{firstpage}{
-    \fancyhf{}
-    \fancyhead[L]{\tikz[baseline]{\node[opacity=.45,inner sep=0pt]{\includegraphics[height=1.5cm]{logo-mciu.jpg}};}}
-    \fancyhead[C]{\tikz[baseline]{\node[opacity=.45,inner sep=0pt]{\includegraphics[height=1.5cm]{logo-ue.jpg}};}}
-    \fancyhead[R]{\tikz[baseline]{\node[opacity=.45,inner sep=0pt]{\includegraphics[height=1.5cm]{logo-aei.png}};}}
-    \renewcommand{\footrule}{\footnotesize \color{gray}\hrule height 0.4pt}
-    \fancyfoot[L]{\footnotesize Memoria Científico-Técnica\\Proyectos individuales tipo A, B y RTA}
-    \fancyfoot[R]{\footnotesize Pág. \thepage\ de \pageref{LastPage}}
+  \fancyhf{}
+  \fancyhead[L]{\tikz[baseline]{\node[opacity=.45,inner sep=0pt]{\includegraphics[height=1.5cm]{logos/logo-mciu.jpg}};}}
+  \fancyhead[C]{\tikz[baseline]{\node[opacity=.45,inner sep=0pt]{\includegraphics[height=1.5cm]{logos/logo-ue.jpg}};}}
+  \fancyhead[R]{\tikz[baseline]{\node[opacity=.45,inner sep=0pt]{\includegraphics[height=1.5cm]{logos/logo-aei.png}};}}
+  \renewcommand{\footrule}{\footnotesize \color{gray}\hrule height 0.4pt}
+  \ifdefstring{\memoria@type}{individual}{%
+    \fancyfoot[L]{\footnotesize Memoria Científico-Técnica\\Proyectos individuales tipo A, B y RTA}%
+  }{%
+    \ifdefstring{\memoria@type}{coordinado}{%
+      \fancyfoot[L]{\footnotesize Memoria Científico-Técnica\\Proyectos coordinados tipo A, B y RTA}%
+    }{}%
+  }
+
+  \fancyfoot[R]{\footnotesize Pág. \thepage\ de \pageref{LastPage}}
 }
 
 % Captions de figuras y tablas
@@ -98,11 +132,21 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1em}
 
+% Diferentes estilos de enumerados
+\RequirePackage[shortlabels]{enumitem}
+% Quitamos indentación en listados y enumeraciones
+\setlist[itemize]{leftmargin=*}
+\setlist[enumerate]{leftmargin=*}
+
+% Comillas bien puestas, y en el idioma que toca
+\RequirePackage{csquotes}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Para el título y aviso de la primera página, que aunque no es 
 %  necesario, así es más parecido a la plantilla
 \RequirePackage{tcolorbox}
-\newtcolorbox{cuadroportada}{%
+\newtcolorbox{boxed}{%
   colback=white,        % fondo blanco
   colframe=black,       % borde negro
   boxrule=1pt,          % grosor del borde
@@ -131,24 +175,32 @@
 \renewcommand{\maketitle}{%
   \thispagestyle{firstpage}%
   \noindent
-  \begin{cuadroportada}
+  \begin{boxed}
     \bfseries
     {
-    \centering
-    \uline{MEMORIA CIENTÍFICO-TÉCNICA PROYECTOS INDIVIDUALES}\\
+      \centering
+      \ifdefstring{\memoria@type}{individual}{%
+        \uline{MEMORIA CIENTÍFICO-TÉCNICA PROYECTOS INDIVIDUALES}%
+      }{%
+        \ifdefstring{\memoria@type}{coordinado}{%
+          \uline{MEMORIA CIENTÍFICO-TÉCNICA PROYECTOS COORDINADOS}%
+        }{}%
+      }\\
     }
     Convocatoria 2025 - «Proyectos de Generación de Conocimiento» y actuaciones para la formación de personal investigador predoctoral asociadas a dichos proyectos.
-  \end{cuadroportada}%
+  \end{boxed}%
 
-  \begin{cuadroaviso}
-    \bfseries
-    \hangindent=2.5em  % primera línea más a la izquierda que el resto
-    \textcolor{red}{AVISO IMPORTANTE} - La memoria \uline{no podrá exceder de 20 páginas}. Para rellenar correctamente esta memoria, lea detenidamente las instrucciones disponibles en la web de la convocatoria. \uline{Es obligatorio rellenarla en inglés si se solicita 100.000€ o más} (en costes directos).
+  \ifmemoria@yellowbox
+    \begin{cuadroaviso}
+      \bfseries
+      \hangindent=2.5em  % primera línea más a la izquierda que el resto
+      \textcolor{red}{AVISO IMPORTANTE} - La memoria \uline{no podrá exceder de 20 páginas}. Para rellenar correctamente esta memoria, lea detenidamente las instrucciones disponibles en la web de la convocatoria. \uline{Es obligatorio rellenarla en inglés si se solicita 100.000€ o más} (en costes directos).
     
-    \hangindent=2.5em
-    \itshape
-    \textcolor{red}{IMPORTANT} – The research proposal \uline{cannot exceed 20 pages}. Instructions to fill this document are available at the website. \uline{If the project cost is equal or greater than 100.000€, this document must be filled in English}.
-  \end{cuadroaviso}
+      \hangindent=2.5em
+      \itshape
+      \textcolor{red}{IMPORTANT} – The research proposal \uline{cannot exceed 20 pages}. Instructions to fill this document are available at the website. \uline{If the project cost is equal or greater than 100.000€, this document must be filled in English}.
+    \end{cuadroaviso}
+  \fi
 }
 \makeatother
 
