@@ -10,10 +10,7 @@ La generación de PDFs y su publicación web es **100% automática** al hacer pu
   - `proyectos-coordinados.tex`: Estructura para proyectos coordinados (IP + subproyectos).
   - `proyectos-individuales.tex`: Estructura para proyectos individuales.
   - `memoria.tex`: El documento de ejemplo a modificar y que se compilará automáticamente.
-- Un flujo CI que:
-  1. Construye el fichero `memoria.pdf` a partir de `memoria.tex`,
-  2. Crea una página simple con enlaces de descarga, y
-  3. Publica todo en **GitHub Pages**.
+- Un flujo CI que construye el fichero `memoria.pdf` a partir de `memoria.tex` y lo publica como artefacto.
 
 ## ¿Cómo lo uso?
 
@@ -21,7 +18,9 @@ Haz un _fork_ del repositorio y trabaja sobre él.
 
 ¿Cómo? Muy fácil, copia el contenido de `proyectos-coordinados.tex` o `proyectos-individuales.tex` en `memoria.tex` (depende del tipo de proyecto) y disfruta escribiendo.
 
-Cada vez que hagas _push_ a la rama `main`, el fichero `memoria.tex` se recompilará y lo tendrás disponible en `https://[tu-usuario-de-github].github.io/Memoria-CT/memoria.pdf`.
+Cada vez que hagas _push_ a la rama `main`, el fichero `memoria.tex` se recompilará y lo tendrás disponible como artefacto para descargar.
+
+Y si no te apetece, siempre te lo puedes bajar y trabajar en local.
 
 ## Licencia y contribución
 
