@@ -20,7 +20,7 @@ jobs:
         with:
           root_file: memoria.tex
           latexmk_use_xelatex: true
-          extra_system_packages: "ttf-mscorefonts-installer"
+          extra_system_packages: "msttcorefonts-installer"
 
       - name: Upload artifact 📦
         uses: actions/upload-artifact@v5
