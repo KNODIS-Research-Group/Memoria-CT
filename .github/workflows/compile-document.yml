@@ -15,17 +15,12 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v5
 
-      - name: Install fonts 💾
-        run: |
-          sudo apt-get update
-          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-          sudo apt-get install ttf-mscorefonts-installer -y
-
-      - name: Compile document 📄
+      - name: Compilar con XeLaTeX
         uses: xu-cheng/latex-action@v4
         with:
           root_file: memoria.tex
           latexmk_use_xelatex: true
+          extra_system_packages: "ttf-mscorefonts-installer"
 
       - name: Upload artifact 📦
         uses: actions/upload-artifact@v5
