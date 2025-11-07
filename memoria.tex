@@ -1,0 +1,149 @@
+\documentclass[
+    type=individual,
+]{memoriact}
+
+\begin{document}
+
+\maketitle
+
+\section{Datos del proyecto}
+
+\textbf{IP 1} (Nombre y apellidos): Laura López Martín (LLM) \\
+\textbf{IP 2} (Nombre y apellidos): Luis Laguna Moreno (LLM) \\
+
+\textbf{TÍTULO DEL PROYECTO (ACRÓNIMO)}: Navegación Autónoma con Vectores Estelares (NAVE) \\
+\textit{\textbf{TITLE OF THE PROJECT (ACRONYM)}}: Autonomous Navigation with Stellar Vectors (NAVE)
+
+\section{Justificación y novedad de la propuesta}
+
+Este documento ha sido generado mediante modelos LLM y no obedece a ningún proyecto real, solo sirve como ejemplo de documento.
+
+\subsection{Adecuación de la propuesta a las características y finalidad de la modalidad seleccionada}
+
+Buscamos avanzar en navegación \emph{visual-inercial} basada en estrellas para vehículos pequeños en entornos con microgravedad y polvo, donde los GNSS no existen y los faros son poco fiables.
+Nuestro objetivo es validar principios reproducibles para \emph{star trackers} de bajo coste y su fusión con IMU en maniobras de corto alcance.
+
+\subsection{Justificación y contribución esperada del proyecto a la generación de conocimiento en la temática de la propuesta. Hipótesis de partida}
+
+El estado del arte ofrece \emph{star trackers} precisos pero caros, sensibles a deslumbramientos y sin explicabilidad~\cite{o2021infinite}.
+Hipótesis: un sensor CMOS económico con óptica fija, más un catálogo estelar reducido y un filtro bayesiano que combine \emph{vectores estelares} e IMU, tampoco funciona, pero queda mejor.
+
+\section{Objetivos, metodología y plan de trabajo}
+
+\subsection{Objetivos generales y específicos}
+
+\begin{itemize}
+    \item \textbf{OG1}. Diseñar un \emph{star tracker} compacto y abierto (hardware + firmware) con catálogo reducido.\\
+    \item \textbf{OG2}. Integrar todo tipo de sensores y algoritmos que se nos ocurran.\\
+    \item \textbf{OG3}. Validar en \emph{banco de cielo} y entorno dinámico con polvo simulado y luces parásitas; publicar dataset y guía.
+\end{itemize}
+
+\textbf{Objetivos específicos (OE) y responsables}\\
+
+\begin{itemize}
+    \item \textbf{OE1}. Óptica y sensor, máscara anti-destello y gestión térmica -- \textbf{IP2}.
+    \item \textbf{OE2}. Catálogo estelar reducido y \emph{pattern matching} robusto -- \textbf{IP1}.
+    \item \textbf{OE3}. Filtro visual-inercial (EKF/UKF) y lógica de reenganche -- \textbf{IP1}.
+    \item \textbf{OE4}. Banco de pruebas, protocolo y documentación abierta -- \textbf{IP2} (apoyo IP1).
+\end{itemize}
+
+\subsection{Descripción de la metodología}
+
+\begin{itemize}
+    \item \textbf{Hardware}. Cámara CMOS global shutter, lente fija, máscara de parasol, IMU de 6 ejes; carcasa impresa. \\
+    \item \textbf{Catálogo}. 150–300 estrellas (mag. aparente filtrada) y constelaciones mínimas; índice angular para búsquedas rápidas. \\
+    \item \textbf{Algoritmia}. Centroides subpíxel, identificación por triángulos, estimación de actitud por \emph{QUEST} y fusión con IMU (EKF/UKF). Gestión de \emph{blinding}: detección de saturación, apagado controlado del sensor y reinicio guiado por predicción inercial. \\
+    \item \textbf{Validación}. Cielo artificial motorizado (trayectorias conocidas), lámparas móviles para deslumbrar, cámara de polvo fino para oclusiones; métricas: error angular, tiempo de \emph{relock}, consumo y temperatura.
+\end{itemize}
+
+\subsection{Plan de trabajo y cronograma}
+
+Duración: \textbf{12 meses}.
+
+\begin{itemize}
+    \item \textbf{M1–M2} (H1): Diseño óptico-mecánico y BOM — Resp. IP2; Entregable: NAVE v0 (STL + esquemas).
+    \item \textbf{M3–M4} (H2): Catálogo reducido y \emph{matching} — Resp. IP1; Entregable: librería de identificación.
+    \item \textbf{M5–M7} (H3): Filtro visual-inercial y lógica de reenganche — Resp. IP1; Entregable: módulo de fusión.
+    \item \textbf{M8–M9} (H4): Banco de cielo y protocolo con polvo/luz — Resp. IP2; Entregable: banco validado.
+    \item \textbf{M10–M12} (H5): Ensayos, dataset y nota técnica — Resp. IP1/IP2; Entregable: repositorio y preprint.
+\end{itemize}
+
+El equipo de trabajo apoyará en mecanizado ligero, impresión 3D y montaje; no asume responsabilidades de objetivos.
+
+\subsection{Identificación de puntos críticos y plan de contingencia}
+
+\begin{itemize}
+    \item \textbf{PC1:} Cegado por fuentes intensas. \emph{Mitigación:} máscara, tiempos de exposición adaptativos y supresión de picos.
+    \item \textbf{PC2:} Deriva térmica. \emph{Mitigación:} calibración térmica y compensación en línea.
+    \item \textbf{PC3:} Polvo y oclusiones. \emph{Mitigación:} robustez por triángulos/constelaciones mínimas y \emph{dead-reckoning} IMU.
+    \item \textbf{PC4:} Vibraciones. \emph{Mitigación:} montaje amortiguado y filtrado pasa-bajo en acelerómetros/giros.
+\end{itemize}
+
+\subsection{Resultados previos del equipo en la temática de la propuesta}
+
+Experiencia en visión para robótica, filtros de actitud y bancos de prueba con cielos artificiales; materiales docentes abiertos y dos demostradores de navegación visual en 2023–2024.
+
+\subsection{Recursos humanos, materiales y de equipamiento disponibles para la ejecución del proyecto}
+
+Laboratorio con impresoras 3D, bancada óptica, cielos estelares de laboratorio, cámaras industriales y equipo para medición térmica; servidor Linux para almacenamiento y CI de firmware.
+
+\section{Impacto esperado de los resultados}
+
+\subsection{Impacto esperado en la generación de conocimiento científico-técnico en el ámbito temático de la propuesta}
+
+Un \textbf{star tracker} ligero y explicable, con catálogo reducido y fusión IMU, aporta métodos y datos para navegación en entornos sin GNSS. Esperamos referencias cruzadas en robótica espacial ligera, \emph{small sats} y vehículos de inspección.
+
+\subsection{Impacto social y económico de los resultados previstos}
+
+Prototipo asequible para \emph{makerspaces} y docencia avanzada, útil en pruebas de atraque, inspección de estructuras y simulación de hábitats. Material abierto que acelera transferencia y formación técnica. Consideramos accesibilidad en guías y montaje.
+
+\subsection{Plan de comunicación científica e internacionalización de los resultados (indicar la previsión de publicaciones en acceso abierto)}
+
+Preprint en acceso abierto, repositorio con licencia permisiva y propuesta breve a congreso de robótica/espacio. Contacto con grupos internacionales para replicación cruzada y comparación de bancos de cielo.
+
+\subsection{Plan de divulgación de los resultados a los colectivos más relevantes para la temática del proyecto y a la sociedad en general}
+
+Demostradores públicos con \emph{skybox} portátil, vídeo de montaje y charla divulgativa sobre “navegar mirando las estrellas” en entornos donde las ventanas son pantallas y el polvo lo esconde todo.
+
+\subsection{Plan de transferencia y valorización de los resultados}
+
+Transferibles: diseño, firmware y banco de cielo. Interés: empresas de simulación, centros de ensayo, educación superior. Vías: licencias abiertas, fabricación de kits y acuerdos de prueba de concepto.
+
+\subsection{Resumen del plan de gestión de datos previsto}
+
+Datos: secuencias de cielo artificial, oclusiones y telemetría IMU. Formatos: PNG/FITS (imágenes), CSV/Parquet (telemetría), metadatos de configuración. Acceso: abiertos con DOI; sin datos personales.
+
+\subsection{Efectos de la inclusión de género en el contenido de la propuesta}
+
+Lenguaje y materiales inclusivos, equilibrio en actividades y visibilización de referentes técnicos. El contenido no distingue por sexo/género, pero la divulgación se diseña para llegar a todo el alumnado.
+
+\section{Justificación del presupuesto solicitado}
+
+Partidas: (i) sensores/óptica/IMU y fabricación de 3–4 unidades, (ii) materiales para banco de cielo y máscara de luces parásitas, (iii) difusión (maquetación, póster). Sin equipamiento mayor. Si se contempla personal de apoyo, se dedicará a montaje, ensayos y limpieza de datos.
+
+\section{Capacidad formativa}
+
+\subsection{Programa de formación previsto en el contexto del proyecto solicitado}
+
+Formación predoctoral en estimación de actitud, visión para navegación y validación experimental; cursos cortos de óptica aplicada y control estocástico; estancia breve en grupo externo de dinámica espacial.
+
+\subsection{Tesis realizadas o en curso en el ámbito del equipo de investigación (últimos 10 años)}
+
+Direcciones en robótica móvil y percepción (5 completadas, 2 en curso), con publicaciones en navegación visual y fusión sensorial.
+
+\subsection{Desarrollo científico o profesional de los doctores/as egresados/as}
+
+Incorporación a centros tecnológicos y universidades; participación en proyectos espaciales y de inspección autónoma.
+
+\section{Condiciones específicas para la efecución de determinados proyectos}
+
+No se manejan muestras humanas/animales ni datos personales. Ensayos en laboratorio controlado con cielos artificiales y polvo simulado no respirable en cabina cerrada.
+\begin{enumerate}[label=\alph*)]
+    \item Aspectos específicos: navegación visual-inercial y gestión de cegado/oclusión.
+    \item Procedimientos: seguridad óptica/eléctrica, contención de polvo y evaluación ética si se realizasen demostraciones con público.
+    \item Instalaciones: laboratorio óptico y cabina de pruebas; acceso a taller para mecanizado ligero.
+    \item Autorizaciones: no preceptivas en esta fase; se tramitarían si algún ensayo lo exigiera.
+\end{enumerate}
+
+\bibliographystyle{plain}
+\bibliography{references}
